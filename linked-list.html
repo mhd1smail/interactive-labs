@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DSA - Linked List</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #000;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .live-bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: rgba(56, 189, 134, 0.1);
+      border: 1px solid rgba(56, 189, 134, 0.2);
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      text-decoration: none;
+      color: white;
+    }
+
+    .topic-card {
+      background: linear-gradient(135deg, rgba(10, 25, 15, 0.8), rgba(0, 10, 5, 0.7));
+      border-radius: 20px;
+      border: 1px solid rgba(56, 189, 134, 0.3);
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      max-width: 550px;
+      backdrop-filter: blur(5px);
+    }
+
+    .topic-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .topic-header {
+      padding: 20px 25px 15px;
+      border-bottom: 1px solid rgba(56, 189, 134, 0.2);
+    }
+
+    .topic-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .topic-interactive {
+      padding: 25px;
+    }
+
+    .demo-area {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .control-btn {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .feedback {
+      font-size: 0.8rem;
+      text-align: center;
+      margin-top: 10px;
+      padding: 8px;
+      min-height: 36px;
+    }
+
+    .feedback.info {
+      color: #63b3ed;
+    }
+
+    .feedback.success {
+      color: #68d391;
+    }
+
+    .feedback.warning {
+      color: #ed64a6;
+    }
+
+    .mono-font {
+      font-family: 'Fira Code', monospace;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      to {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+    }
+
+    .linked-list {
+      --accent-gradient: linear-gradient(135deg, #4299e1, #63b3ed);
+    }
+
+    .ll-demo-area {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      min-height: 80px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .ll-node {
+      display: flex;
+      align-items: center;
+      background: #2d3748;
+      border-radius: 8px;
+      border: 1px solid #4a5568;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .ll-node.removing {
+      animation: fadeOut 0.5s ease forwards;
+    }
+
+    .ll-node-data {
+      padding: 15px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-right: 1px dashed #4a5568;
+    }
+
+    .ll-node-next {
+      width: 30px;
+      height: 30px;
+      margin: 0 10px;
+      background-color: #4a5568;
+      border-radius: 50%;
+    }
+
+    .ll-arrow {
+      font-size: 2rem;
+      color: #63b3ed;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="matrix-canvas" class="live-bg-canvas"></canvas>
+  <a href="dsa.html" class="back-button">&#x2190;</a>
+  <div class="topic-card linked-list">
+    <div class="topic-header">
+      <h3 class="topic-title mono-font">🔗 Linked List</h3>
+    </div>
+    <div class="topic-interactive">
+      <div class="demo-area">
+        <div class="ll-demo-area" id="ll-demo-area"></div>
+      </div>
+      <div class="controls">
+        <button class="control-btn" onclick="ll.addToHead()">addToHead()</button>
+        <button class="control-btn" onclick="ll.addToTail()">addToTail()</button>
+        <button class="control-btn" onclick="ll.removeFromHead()">removeFromHead()</button>
+      </div>
+      <div class="feedback" id="ll-feedback">Add a node to get started.</div>
+    </div>
+  </div>
+  <script>
+    function updateFeedback(id, message, type) { document.getElementById(id).textContent = message; document.getElementById(id).className = `feedback ${type || ''}`; }
+    const ll = { area: document.getElementById('ll-demo-area'), nodes: [], addToHead() { const value = Math.floor(Math.random() * 90) + 10; this.nodes.unshift(value); this.render(); updateFeedback('ll-feedback', `Node(${value}) added to head.`, 'info'); }, addToTail() { const value = Math.floor(Math.random() * 90) + 10; this.nodes.push(value); this.render(); updateFeedback('ll-feedback', `Node(${value}) added to tail.`, 'success'); }, removeFromHead() { if (this.nodes.length === 0) { updateFeedback('ll-feedback', 'List is empty.', 'warning'); return; } const removedValue = this.nodes.shift(); const nodeToRemove = this.area.firstChild; if (nodeToRemove) { nodeToRemove.classList.add('removing'); if (nodeToRemove.nextSibling) nodeToRemove.nextSibling.classList.add('removing'); setTimeout(() => this.render(), 500); } updateFeedback('ll-feedback', `Node(${removedValue}) removed.`, 'info'); }, render() { this.area.innerHTML = ''; if (this.nodes.length === 0) { this.area.innerHTML = `<span style="opacity: 0.5;">NULL</span>`; } this.nodes.forEach((value, index) => { const nodeEl = document.createElement('div'); nodeEl.className = 'll-node mono-font'; nodeEl.innerHTML = `<div class="ll-node-data">${value}</div><div class="ll-node-next"></div>`; this.area.appendChild(nodeEl); if (index < this.nodes.length - 1) { const arrowEl = document.createElement('div'); arrowEl.className = 'll-arrow'; arrowEl.innerHTML = '→'; this.area.appendChild(arrowEl); } }); } };
+    ll.render();
+    const canvas = document.getElementById('matrix-canvas'); const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; const alphabet = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; const fontSize = 16; const columns = canvas.width / fontSize; const rainDrops = []; for (let x = 0; x < columns; x++) { rainDrops[x] = 1; } const draw = () => { ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#0F0'; ctx.font = fontSize + 'px monospace'; for (let i = 0; i < rainDrops.length; i++) { const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length)); ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize); if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) { rainDrops[i] = 0; } rainDrops[i]++; } }; setInterval(draw, 30);
+  </script>
+</body>
+
+</html>

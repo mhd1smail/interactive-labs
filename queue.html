@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DSA - The Queue</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #000;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .live-bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: rgba(56, 189, 134, 0.1);
+      border: 1px solid rgba(56, 189, 134, 0.2);
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      text-decoration: none;
+      color: white;
+    }
+
+    .topic-card {
+      background: linear-gradient(135deg, rgba(10, 25, 15, 0.8), rgba(0, 10, 5, 0.7));
+      border-radius: 20px;
+      border: 1px solid rgba(56, 189, 134, 0.3);
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      max-width: 550px;
+      backdrop-filter: blur(5px);
+    }
+
+    .topic-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .topic-header {
+      padding: 20px 25px 15px;
+      border-bottom: 1px solid rgba(56, 189, 134, 0.2);
+    }
+
+    .topic-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .topic-interactive {
+      padding: 25px;
+    }
+
+    .demo-area {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .control-btn {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .feedback {
+      font-size: 0.8rem;
+      text-align: center;
+      margin-top: 10px;
+      padding: 8px;
+      min-height: 36px;
+    }
+
+    .feedback.info {
+      color: #63b3ed;
+    }
+
+    .feedback.success {
+      color: #68d391;
+    }
+
+    .feedback.warning {
+      color: #ed64a6;
+    }
+
+    .mono-font {
+      font-family: 'Fira Code', monospace;
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      to {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+    }
+
+    @keyframes highlight {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 15px var(--accent-color);
+      }
+    }
+
+    .queue {
+      --accent-color: rgba(237, 100, 166, 0.6);
+      --accent-gradient: linear-gradient(135deg, #ed64a6, #f687b3);
+    }
+
+    .queue-demo-area {
+      width: 100%;
+      height: 60px;
+      border: 3px solid #4a5568;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      padding: 5px;
+    }
+
+    .queue-item {
+      min-width: 50px;
+      height: 50px;
+      padding: 10px;
+      background: var(--accent-gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin: 0 5px;
+      color: white;
+      animation: enqueue 0.5s ease;
+    }
+
+    .queue-item.removing {
+      animation: fadeOut 0.5s ease forwards;
+    }
+
+    .queue-item.highlight {
+      animation: highlight 0.8s ease;
+    }
+
+    @keyframes enqueue {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="matrix-canvas" class="live-bg-canvas"></canvas>
+  <a href="dsa.html" class="back-button">&#x2190;</a>
+  <div class="topic-card queue">
+    <div class="topic-header">
+      <h3 class="topic-title mono-font">→ The Queue (FIFO)</h3>
+    </div>
+    <div class="topic-interactive">
+      <div class="demo-area">
+        <div class="queue-demo-area" id="queue-demo-area"></div>
+      </div>
+      <div class="controls">
+        <button class="control-btn" onclick="queue.enqueue()">enqueue()</button>
+        <button class="control-btn" onclick="queue.dequeue()">dequeue()</button>
+        <button class="control-btn" onclick="queue.front()">front()</button>
+      </div>
+      <div class="feedback" id="queue-feedback">Enqueue an item to join the queue.</div>
+    </div>
+  </div>
+  <script>
+    function updateFeedback(id, message, type) { document.getElementById(id).textContent = message; document.getElementById(id).className = `feedback ${type || ''}`; }
+    const queue = { area: document.getElementById('queue-demo-area'), items: [], counter: 0, enqueue() { if (this.items.length >= 5) { updateFeedback('queue-feedback', 'Queue is full!', 'warning'); return; } this.counter++; this.items.push(this.counter); this.render(); updateFeedback('queue-feedback', `Enqueued item ${this.counter}.`, 'success'); }, dequeue() { if (this.items.length === 0) { updateFeedback('queue-feedback', 'Queue is empty.', 'warning'); return; } const dequeuedValue = this.items.shift(); const itemToRemove = this.area.firstChild; if (itemToRemove) itemToRemove.classList.add('removing'); setTimeout(() => this.render(), 500); updateFeedback('queue-feedback', `Dequeued item ${dequeuedValue}.`, 'info'); }, front() { if (this.items.length === 0) { updateFeedback('queue-feedback', 'Queue is empty.', 'warning'); return; } const frontItem = this.area.firstChild; if (frontItem) frontItem.classList.add('highlight'); setTimeout(() => frontItem.classList.remove('highlight'), 800); updateFeedback('queue-feedback', `Front item is ${this.items[0]}.`, 'info'); }, render() { this.area.innerHTML = ''; this.items.forEach(value => { const itemEl = document.createElement('div'); itemEl.className = 'queue-item mono-font'; itemEl.textContent = value; this.area.appendChild(itemEl); }); } };
+    const canvas = document.getElementById('matrix-canvas'); const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; const alphabet = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ012356789'; const fontSize = 16; const columns = canvas.width / fontSize; const rainDrops = []; for (let x = 0; x < columns; x++) { rainDrops[x] = 1; } const draw = () => { ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#0F0'; ctx.font = fontSize + 'px monospace'; for (let i = 0; i < rainDrops.length; i++) { const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length)); ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize); if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) { rainDrops[i] = 0; } rainDrops[i]++; } }; setInterval(draw, 30);
+  </script>
+</body>
+
+</html>

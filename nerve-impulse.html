@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biology - Nerve Impulse</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0c1f1a;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .bg-animation-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .cell-bubble {
+      position: absolute;
+      background: rgba(72, 187, 120, 0.15);
+      border-radius: 50%;
+      box-shadow: inset 0 0 10px rgba(72, 187, 120, 0.5);
+      animation: floatUp 25s infinite linear;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-10vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      text-decoration: none;
+      color: white;
+    }
+
+    .topic-card {
+      background: linear-gradient(135deg, rgba(29, 31, 35, 0.8), rgba(22, 62, 48, 0.7));
+      border-radius: 20px;
+      border: 1px solid rgba(72, 187, 120, 0.3);
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      max-width: 550px;
+      backdrop-filter: blur(5px);
+    }
+
+    .topic-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .topic-header {
+      padding: 20px 25px 15px;
+      border-bottom: 1px solid rgba(72, 187, 120, 0.2);
+    }
+
+    .topic-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .topic-interactive {
+      padding: 25px;
+    }
+
+    .demo-area {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .control-btn {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .feedback {
+      font-size: 0.9rem;
+      text-align: center;
+      margin-top: 10px;
+      padding: 8px;
+      min-height: 36px;
+    }
+
+    .feedback.success {
+      color: #68d391;
+    }
+
+    .nerve-impulse {
+      --accent-gradient: linear-gradient(135deg, #f6ad55, #fbd38d);
+    }
+
+    .axon-demo {
+      width: 100%;
+      height: 80px;
+      position: relative;
+      background: #4A5568;
+      border-radius: 40px;
+      padding: 10px;
+    }
+
+    .axon-membrane {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right, #A0AEC0, #718096);
+      border-radius: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .action-potential {
+      position: absolute;
+      width: 60px;
+      height: 100%;
+      background: radial-gradient(circle, #fbd38d, #f6ad55);
+      border-radius: 30px;
+      left: -60px;
+      box-shadow: 0 0 20px #f6ad55;
+      opacity: 0;
+    }
+
+    .action-potential.fired {
+      animation: travel-axon 2s ease-in-out forwards;
+    }
+
+    @keyframes travel-axon {
+      0% {
+        left: -60px;
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 1;
+      }
+
+      90% {
+        opacity: 1;
+      }
+
+      100% {
+        left: 100%;
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="animation-container" class="bg-animation-container"></div>
+  <a href="biology.html" class="back-button">&#x2190;</a>
+  <div class="topic-card nerve-impulse">
+    <div class="topic-header">
+      <h3 class="topic-title">⚡ Nerve Impulse</h3>
+    </div>
+    <div class="topic-interactive">
+      <div class="demo-area">
+        <div class="axon-demo">
+          <div class="axon-membrane">
+            <div class="action-potential" id="action-potential"></div>
+          </div>
+        </div>
+      </div>
+      <div class="controls"><button class="control-btn" onclick="fireNerveImpulse()">Fire Impulse</button></div>
+      <div class="feedback" id="nerve-feedback">Click "Fire Impulse" to send a signal.</div>
+    </div>
+  </div>
+  <script>
+    function updateFeedback(id, message, type) { document.getElementById(id).textContent = message; document.getElementById(id).className = `feedback ${type || ''}`; }
+    function fireNerveImpulse() { const impulse = document.getElementById('action-potential'); const newImpulse = impulse.cloneNode(true); impulse.parentNode.replaceChild(newImpulse, impulse); newImpulse.classList.add('fired'); updateFeedback('nerve-feedback', 'Signal sent!', 'success'); }
+    document.addEventListener('DOMContentLoaded', () => { const container = document.getElementById('animation-container'); for (let i = 0; i < 30; i++) { const bubble = document.createElement('div'); bubble.className = 'cell-bubble'; const size = Math.random() * 100 + 20; bubble.style.width = `${size}px`; bubble.style.height = `${size}px`; bubble.style.left = `${Math.random() * 100}%`; bubble.style.animationDelay = `${Math.random() * 10}s`; bubble.style.animationDuration = `${Math.random() * 15 + 10}s`; container.appendChild(bubble); } });
+  </script>
+</body>
+
+</html>

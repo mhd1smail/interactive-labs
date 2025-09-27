@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Lab - Gravity</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0c0a1f;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .bg-animation-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0;
+      animation: rise 10s infinite linear;
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-10vh) scale(1);
+        opacity: 0;
+      }
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      text-decoration: none;
+      color: white;
+    }
+
+    .topic-card {
+      background: linear-gradient(135deg, rgba(29, 31, 35, 0.8), rgba(22, 22, 48, 0.7));
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      backdrop-filter: blur(5px);
+    }
+
+    .topic-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .topic-header {
+      padding: 20px 25px 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .topic-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .topic-interactive {
+      padding: 25px;
+    }
+
+    .demo-area {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .control-btn {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .feedback {
+      font-size: 0.8rem;
+      text-align: center;
+      margin-top: 10px;
+      padding: 8px;
+      min-height: 36px;
+    }
+
+    .feedback.success {
+      color: #68d391;
+    }
+
+    .feedback.info {
+      color: #63b3ed;
+    }
+
+    .gravity {
+      --accent-gradient: linear-gradient(135deg, #9f7aea, #b794f6);
+    }
+
+    .gravity-demo {
+      position: relative;
+      width: 100%;
+      height: 160px;
+    }
+
+    .planet {
+      width: 50px;
+      height: 50px;
+      background: var(--accent-gradient);
+      border-radius: 50%;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .satellite {
+      width: 15px;
+      height: 15px;
+      background: linear-gradient(135deg, #f6e05e, #f6ad55);
+      border-radius: 50%;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      animation: orbit var(--orbit-speed, 3s) linear infinite;
+    }
+
+    .orbit-path {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 140px;
+      height: 140px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .show-orbit .orbit-path {
+      opacity: 1;
+    }
+
+    @keyframes orbit {
+      from {
+        transform: rotate(0deg) translateX(70px) rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg) translateX(70px) rotate(-360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="animation-container" class="bg-animation-container"></div>
+  <a href="physics.html" class="back-button">&#x2190;</a>
+  <div class="topic-card gravity">
+    <div class="topic-header">
+      <h3 class="topic-title">🌍 Gravity & Orbits</h3>
+    </div>
+    <div class="topic-interactive">
+      <div class="demo-area">
+        <div class="gravity-demo" id="gravity-demo">
+          <div class="orbit-path"></div>
+          <div class="planet" onclick="changePlanetMass()"></div>
+          <div class="satellite"></div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="control-btn" onclick="toggleOrbitPath()">Show Orbit</button>
+        <button class="control-btn" onclick="changeOrbitSpeed()">Speed Up</button>
+        <button class="control-btn" onclick="changePlanetMass()">More Mass</button>
+      </div>
+      <div class="feedback" id="gravity-feedback">Click the planet to increase its mass!</div>
+    </div>
+  </div>
+  <script>
+    let orbitPathVisible = false; let planetMass = 1; let currentOrbitSpeed = 3;
+    function updateFeedback(id, message, type) { document.getElementById(id).textContent = message; document.getElementById(id).className = `feedback ${type}`; }
+    function toggleOrbitPath() { orbitPathVisible = !orbitPathVisible; document.getElementById('gravity-demo').classList.toggle('show-orbit'); updateFeedback('gravity-feedback', orbitPathVisible ? 'Orbital path is visible!' : 'Path hidden.', 'info'); }
+    function changeOrbitSpeed() { currentOrbitSpeed = currentOrbitSpeed === 3 ? 1.5 : currentOrbitSpeed === 1.5 ? 0.8 : 3; const speedText = currentOrbitSpeed === 0.8 ? 'Very Fast' : currentOrbitSpeed === 1.5 ? 'Fast' : 'Normal'; document.querySelector('.satellite').style.setProperty('--orbit-speed', `${currentOrbitSpeed}s`); updateFeedback('gravity-feedback', `Orbit speed: ${speedText}`, 'success'); }
+    function changePlanetMass() { planetMass = planetMass >= 3 ? 1 : planetMass + 1; const planet = document.querySelector('.planet'); const size = 50 + (planetMass - 1) * 15; planet.style.width = `${size}px`; planet.style.height = `${size}px`; const massText = planetMass > 2 ? 'Massive!' : planetMass > 1 ? 'Heavy' : 'Normal'; const adjustedSpeed = currentOrbitSpeed / Math.sqrt(planetMass); document.querySelector('.satellite').style.setProperty('--orbit-speed', `${adjustedSpeed}s`); updateFeedback('gravity-feedback', `Planet mass: ${massText}`, 'success'); }
+    document.addEventListener('DOMContentLoaded', () => { const container = document.getElementById('animation-container'); for (let i = 0; i < 50; i++) { const particle = document.createElement('div'); particle.className = 'particle'; const size = Math.random() * 3 + 1; particle.style.width = `${size}px`; particle.style.height = `${size}px`; particle.style.left = `${Math.random() * 100}%`; particle.style.animationDelay = `${Math.random() * 10}s`; particle.style.animationDuration = `${Math.random() * 10 + 5}s`; container.appendChild(particle); } });
+  </script>
+</body>
+
+</html>

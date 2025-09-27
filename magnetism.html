@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Lab - Magnetism</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0c0a1f;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .bg-animation-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0;
+      animation: rise 10s infinite linear;
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-10vh) scale(1);
+        opacity: 0;
+      }
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      text-decoration: none;
+      color: white;
+    }
+
+    .topic-card {
+      background: linear-gradient(135deg, rgba(29, 31, 35, 0.8), rgba(22, 22, 48, 0.7));
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      backdrop-filter: blur(5px);
+    }
+
+    .topic-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .topic-header {
+      padding: 20px 25px 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .topic-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .topic-interactive {
+      padding: 25px;
+    }
+
+    .demo-area {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .control-btn {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .feedback {
+      font-size: 0.8rem;
+      text-align: center;
+      margin-top: 10px;
+      padding: 8px;
+      min-height: 36px;
+    }
+
+    .feedback.success {
+      color: #68d391;
+    }
+
+    .feedback.info {
+      color: #63b3ed;
+    }
+
+    .feedback.warning {
+      color: #f6ad55;
+    }
+
+    .magnetism {
+      --accent-gradient: linear-gradient(135deg, #e53e3e, #fc8181);
+    }
+
+    #magnetism-demo {
+      height: 180px;
+      position: relative;
+      width: 100%;
+    }
+
+    .magnet {
+      width: 80px;
+      height: 50px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: grab;
+      transition: all 0.3s ease;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      user-select: none;
+      position: absolute;
+    }
+
+    #magnet-n {
+      left: 50px;
+      top: 65px;
+    }
+
+    #magnet-s {
+      right: 50px;
+      top: 65px;
+    }
+
+    .magnet-n {
+      background: linear-gradient(135deg, #e53e3e, #fc8181);
+    }
+
+    .magnet-s {
+      background: linear-gradient(135deg, #4299e1, #63b3ed);
+    }
+
+    .field-line {
+      position: absolute;
+      height: 2px;
+      background: rgba(100, 181, 246, 0.4);
+      border-radius: 1px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .show-fields .field-line {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="animation-container" class="bg-animation-container"></div>
+  <a href="physics.html" class="back-button">&#x2190;</a>
+  <div class="topic-card magnetism">
+    <div class="topic-header">
+      <h3 class="topic-title">🧲 Magnetism & Fields</h3>
+    </div>
+    <div class="topic-interactive">
+      <div class="demo-area" id="magnetism-demo">
+        <div class="magnet magnet-n" id="magnet-n">N</div>
+        <div class="magnet magnet-s" id="magnet-s">S</div>
+        <div class="field-line" style="width: 80px; top: 30%; left: 50%; transform: translateX(-50%) rotate(5deg);">
+        </div>
+        <div class="field-line" style="width: 100px; top: 50%; left: 50%; transform: translateX(-50%) rotate(0deg);">
+        </div>
+        <div class="field-line" style="width: 80px; top: 70%; left: 50%; transform: translateX(-50%) rotate(-5deg);">
+        </div>
+      </div>
+      <div class="controls">
+        <button class="control-btn" onclick="toggleMagneticFields()">Show Fields</button>
+        <button class="control-btn" onclick="flipPole('magnet-n')">Flip N Pole</button>
+        <button class="control-btn" onclick="resetMagnets()">Reset</button>
+      </div>
+      <div class="feedback" id="magnetism-feedback">Drag a magnet toward the other!</div>
+    </div>
+  </div>
+  <script>
+    const magnetN = document.getElementById('magnet-n'), magnetS = document.getElementById('magnet-s');
+    const initialMagnetPositions = { n: { left: magnetN.offsetLeft, top: magnetN.offsetTop }, s: { left: magnetS.offsetLeft, top: magnetS.offsetTop } };
+    let activeMagnet = null, isDragging = false, interactionTriggered = false, magneticFieldsVisible = false;
+    function updateFeedback(id, message, type) { document.getElementById(id).textContent = message; document.getElementById(id).className = `feedback ${type}`; }
+    [magnetN, magnetS].forEach(magnet => { magnet.addEventListener('mousedown', (e) => { if (e.button !== 0) return; isDragging = true; activeMagnet = magnet; activeMagnet.style.transition = 'none'; activeMagnet.style.zIndex = 10; }); });
+    document.addEventListener('mouseup', () => { if (!isDragging || !activeMagnet) return; isDragging = false; const initialPos = activeMagnet.id === 'magnet-n' ? initialMagnetPositions.n : initialMagnetPositions.s; activeMagnet.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'; activeMagnet.style.left = `${initialPos.left}px`; activeMagnet.style.top = `${initialPos.top}px`; activeMagnet.style.transform = ''; activeMagnet.style.zIndex = 1; activeMagnet = null; interactionTriggered = false; setTimeout(() => updateFeedback('magnetism-feedback', 'Drag a magnet toward the other!', ''), 1000); });
+    document.addEventListener('mousemove', (e) => { if (!isDragging || !activeMagnet) return; const rect = document.getElementById('magnetism-demo').getBoundingClientRect(); let x = e.clientX - rect.left - (activeMagnet.offsetWidth / 2); let y = e.clientY - rect.top - (activeMagnet.offsetHeight / 2); x = Math.max(0, Math.min(x, rect.width - activeMagnet.offsetWidth)); y = Math.max(0, Math.min(y, rect.height - activeMagnet.offsetHeight)); activeMagnet.style.left = `${x}px`; activeMagnet.style.top = `${y}px`; const otherMagnet = activeMagnet.id === 'magnet-n' ? magnetS : magnetN; const r1 = activeMagnet.getBoundingClientRect(), r2 = otherMagnet.getBoundingClientRect(); const distance = Math.hypot(r1.x - r2.x, r1.y - r2.y); if (distance < 120 && !interactionTriggered) { interactionTriggered = true; const samePoles = activeMagnet.textContent === otherMagnet.textContent; updateFeedback('magnetism-feedback', samePoles ? 'REPULSION!' : 'ATTRACTION!', samePoles ? 'warning' : 'success'); activeMagnet.style.transform = `translateX(${(r1.x < r2.x ? -20 : 20) * (samePoles ? 1 : -1)}px)`; } else if (distance >= 120) { interactionTriggered = false; activeMagnet.style.transform = ''; } });
+    function toggleMagneticFields() { magneticFieldsVisible = !magneticFieldsVisible; document.getElementById('magnetism-demo').classList.toggle('show-fields'); updateFeedback('magnetism-feedback', magneticFieldsVisible ? 'Field lines visible.' : 'Field lines hidden.', 'info'); }
+    function flipPole(id) { const magnet = document.getElementById(id); const isN = magnet.textContent === 'N'; magnet.textContent = isN ? 'S' : 'N'; magnet.className = `magnet magnet-${isN ? 's' : 'n'}`; updateFeedback('magnetism-feedback', 'Pole flipped!', 'info'); }
+    function resetMagnets() { magnetN.className = 'magnet magnet-n'; magnetN.textContent = 'N'; magnetS.className = 'magnet magnet-s'; magnetS.textContent = 'S'; magnetN.style.left = `${initialMagnetPositions.n.left}px`; magnetN.style.top = `${initialMagnetPositions.n.top}px`; magnetS.style.left = `${initialMagnetPositions.s.left}px`; magnetS.style.top = `${initialMagnetPositions.s.top}px`; updateFeedback('magnetism-feedback', 'Magnets have been reset.', 'info'); }
+    document.addEventListener('DOMContentLoaded', () => { const container = document.getElementById('animation-container'); for (let i = 0; i < 50; i++) { const particle = document.createElement('div'); particle.className = 'particle'; const size = Math.random() * 3 + 1; particle.style.width = `${size}px`; particle.style.height = `${size}px`; particle.style.left = `${Math.random() * 100}%`; particle.style.animationDelay = `${Math.random() * 10}s`; particle.style.animationDuration = `${Math.random() * 10 + 5}s`; container.appendChild(particle); } });
+  </script>
+</body>
+
+</html>

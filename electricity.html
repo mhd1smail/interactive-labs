@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Lab - Electricity</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0c0a1f;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .bg-animation-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0;
+      animation: rise 10s infinite linear;
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-10vh) scale(1);
+        opacity: 0;
+      }
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      text-decoration: none;
+      color: white;
+    }
+
+    .topic-card {
+      background: linear-gradient(135deg, rgba(29, 31, 35, 0.8), rgba(22, 22, 48, 0.7));
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      backdrop-filter: blur(5px);
+    }
+
+    .topic-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .topic-header {
+      padding: 20px 25px 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .topic-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .topic-interactive {
+      padding: 25px;
+    }
+
+    .demo-area {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .control-btn {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .feedback {
+      font-size: 0.8rem;
+      text-align: center;
+      margin-top: 10px;
+      padding: 8px;
+      min-height: 36px;
+    }
+
+    .feedback.success {
+      color: #68d391;
+    }
+
+    .feedback.info {
+      color: #63b3ed;
+    }
+
+    .feedback.warning {
+      color: #f6ad55;
+    }
+
+    .electricity {
+      --accent-gradient: linear-gradient(135deg, #f6e05e, #f6ad55);
+    }
+
+    .circuit-demo {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .battery,
+    .bulb,
+    .resistor {
+      width: 50px;
+      height: 30px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .battery {
+      background: linear-gradient(135deg, #48bb78, #68d391);
+    }
+
+    .bulb {
+      background: linear-gradient(135deg, #f6e05e, #f6ad55);
+      color: #2d3748;
+    }
+
+    .bulb.on {
+      animation: bulb-glow 1s ease-in-out infinite;
+      box-shadow: 0 0 20px rgba(246, 224, 94, 0.8);
+    }
+
+    .resistor {
+      background: linear-gradient(135deg, #a0aec0, #cbd5e0);
+      color: #2d3748;
+    }
+
+    @keyframes bulb-glow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 10px rgba(246, 224, 94, 0.4);
+      }
+
+      50% {
+        box-shadow: 0 0 25px rgba(246, 224, 94, 0.9);
+      }
+    }
+
+    .wire {
+      height: 3px;
+      background: #a0aec0;
+      border-radius: 2px;
+      min-width: 30px;
+      position: relative;
+    }
+
+    .wire.active::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 10px;
+      background: #fff;
+      border-radius: 2px;
+      animation: current-flow 1s linear infinite;
+    }
+
+    @keyframes current-flow {
+      0% {
+        left: 0;
+      }
+
+      100% {
+        left: calc(100% - 10px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="animation-container" class="bg-animation-container"></div>
+  <a href="physics.html" class="back-button">&#x2190;</a>
+  <div class="topic-card electricity">
+    <div class="topic-header">
+      <h3 class="topic-title">⚡ Electricity & Circuits</h3>
+    </div>
+    <div class="topic-interactive">
+      <div class="demo-area">
+        <div class="circuit-demo">
+          <div class="battery">BAT</div>
+          <div class="wire" id="wire1"></div>
+          <div class="bulb" id="bulb">💡</div>
+          <div class="wire" id="wire2"></div>
+          <div class="resistor">RES</div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="control-btn" onclick="toggleCircuit()">Complete Circuit</button>
+        <button class="control-btn" onclick="addResistance()">Add Resistance</button>
+        <button class="control-btn" onclick="resetCircuit()">Reset</button>
+      </div>
+      <div class="feedback" id="electricity-feedback">Click "Complete Circuit" to start!</div>
+    </div>
+  </div>
+  <script>
+    let circuitComplete = false; let resistanceAdded = false;
+    function updateFeedback(id, message, type) { document.getElementById(id).textContent = message; document.getElementById(id).className = `feedback ${type}`; }
+    function toggleCircuit() { circuitComplete = !circuitComplete; const bulb = document.getElementById('bulb'); document.querySelectorAll('.wire').forEach(wire => wire.classList.toggle('active', circuitComplete)); if (circuitComplete) { bulb.classList.add('on'); bulb.style.animation = `bulb-glow ${resistanceAdded ? 2 : 1}s ease-in-out infinite`; updateFeedback('electricity-feedback', 'Circuit complete! The bulb is ON!', 'success'); } else { bulb.classList.remove('on'); bulb.style.animation = ''; updateFeedback('electricity-feedback', 'Circuit broken. The bulb is OFF.', 'warning'); } }
+    function addResistance() { resistanceAdded = !resistanceAdded; const bulb = document.getElementById('bulb'); if (circuitComplete) { bulb.style.animation = `bulb-glow ${resistanceAdded ? 2 : 1}s ease-in-out infinite`; updateFeedback('electricity-feedback', resistanceAdded ? 'Resistance added! Bulb is dimmer.' : 'Resistance removed! Bulb is brighter.', 'info'); } else { updateFeedback('electricity-feedback', resistanceAdded ? 'Resistance is ready.' : 'Resistance removed.', 'info'); } }
+    function resetCircuit() { circuitComplete = false; resistanceAdded = false; document.getElementById('bulb').classList.remove('on'); document.getElementById('bulb').style.animation = ''; document.querySelectorAll('.wire').forEach(wire => wire.classList.remove('active')); updateFeedback('electricity-feedback', 'Circuit has been reset.', 'info'); }
+    document.addEventListener('DOMContentLoaded', () => { const container = document.getElementById('animation-container'); for (let i = 0; i < 50; i++) { const particle = document.createElement('div'); particle.className = 'particle'; const size = Math.random() * 3 + 1; particle.style.width = `${size}px`; particle.style.height = `${size}px`; particle.style.left = `${Math.random() * 100}%`; particle.style.animationDelay = `${Math.random() * 10}s`; particle.style.animationDuration = `${Math.random() * 10 + 5}s`; container.appendChild(particle); } });
+  </script>
+</body>
+
+</html>

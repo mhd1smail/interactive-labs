@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Physics Lab - Select a Topic</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
+
+        :root {
+            --magnetism-glow: rgba(229, 62, 62, 0.6);
+            --gravity-glow: rgba(159, 122, 234, 0.6);
+            --waves-glow: rgba(66, 153, 225, 0.6);
+            --electricity-glow: rgba(246, 224, 94, 0.6);
+            --optics-glow: rgba(72, 187, 120, 0.6);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0c0a1f;
+            color: #e8eaed;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            animation: rise 10s infinite linear;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-10vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .hero h1 {
+            font-weight: 800;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-shadow: 0 0 15px rgba(180, 160, 255, 0.5);
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .topic-card {
+            background: rgba(29, 31, 35, 0.5);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-glow {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--glow-color, transparent) 0%, transparent 40%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 1;
+        }
+
+        .topic-card:hover .card-glow {
+            opacity: 0.2;
+        }
+
+        .card-content {
+            padding: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .topic-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .topic-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .topic-description {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            min-height: 70px;
+        }
+
+        .magnetism {
+            --glow-color: var(--magnetism-glow);
+        }
+
+        .gravity {
+            --glow-color: var(--gravity-glow);
+        }
+
+        .waves {
+            --glow-color: var(--waves-glow);
+        }
+
+        .electricity {
+            --glow-color: var(--electricity-glow);
+        }
+
+        .optics {
+            --glow-color: var(--optics-glow);
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            text-decoration: none;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="main-menu.html" class="back-button">&#x2190;</a>
+    <div id="animation-container" class="bg-animation-container"></div>
+    <div class="content-wrapper">
+        <div class="hero">
+            <h1>SELECT A PHYSICS TOPIC</h1>
+        </div>
+        <div class="topics-grid">
+            <div class="topic-card magnetism" onclick="window.location.href='magnetism.html'">
+                <div class="card-glow"></div>
+                <div class="card-content">
+                    <div class="topic-icon">🧲</div>
+                    <h3 class="topic-title">Magnetism & Fields</h3>
+                    <p class="topic-description">Experience the invisible forces of attraction and repulsion between
+                        magnetic poles.</p>
+                </div>
+            </div>
+            <div class="topic-card gravity" onclick="window.location.href='gravity.html'">
+                <div class="card-glow"></div>
+                <div class="card-content">
+                    <div class="topic-icon">🌍</div>
+                    <h3 class="topic-title">Gravity & Orbits</h3>
+                    <p class="topic-description">Witness how mass bends spacetime and dictates the dance of planets and
+                        satellites.</p>
+                </div>
+            </div>
+            <div class="topic-card waves" onclick="window.location.href='waves.html'">
+                <div class="card-glow"></div>
+                <div class="card-content">
+                    <div class="topic-icon">〰️</div>
+                    <h3 class="topic-title">Waves & Vibrations</h3>
+                    <p class="topic-description">Create ripples and observe how frequency and amplitude shape the energy
+                        they carry.</p>
+                </div>
+            </div>
+            <div class="topic-card electricity" onclick="window.location.href='electricity.html'">
+                <div class="card-glow"></div>
+                <div class="card-content">
+                    <div class="topic-icon">⚡</div>
+                    <h3 class="topic-title">Electricity & Circuits</h3>
+                    <p class="topic-description">Build simple circuits, control the flow of current, and light up
+                        virtual bulbs.</p>
+                </div>
+            </div>
+            <div class="topic-card optics" onclick="window.location.href='optics.html'">
+                <div class="card-glow"></div>
+                <div class="card-content">
+                    <div class="topic-icon">🌈</div>
+                    <h3 class="topic-title">Light & Optics</h3>
+                    <p class="topic-description">Bend light through prisms to split it into a rainbow and explore
+                        principles of refraction.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => { const container = document.getElementById('animation-container'); for (let i = 0; i < 50; i++) { const particle = document.createElement('div'); particle.className = 'particle'; const size = Math.random() * 3 + 1; particle.style.width = `${size}px`; particle.style.height = `${size}px`; particle.style.left = `${Math.random() * 100}%`; particle.style.animationDelay = `${Math.random() * 10}s`; particle.style.animationDuration = `${Math.random() * 10 + 5}s`; container.appendChild(particle); } });
+    </script>
+</body>
+
+</html>

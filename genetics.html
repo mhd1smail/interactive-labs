@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biology - Punnett Square</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0c1f1a;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .bg-animation-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .cell-bubble {
+      position: absolute;
+      background: rgba(72, 187, 120, 0.15);
+      border-radius: 50%;
+      box-shadow: inset 0 0 10px rgba(72, 187, 120, 0.5);
+      animation: floatUp 25s infinite linear;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-10vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      text-decoration: none;
+      color: white;
+    }
+
+    .topic-card {
+      background: linear-gradient(135deg, rgba(29, 31, 35, 0.8), rgba(22, 62, 48, 0.7));
+      border-radius: 20px;
+      border: 1px solid rgba(72, 187, 120, 0.3);
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      max-width: 550px;
+      backdrop-filter: blur(5px);
+    }
+
+    .topic-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .topic-header {
+      padding: 20px 25px 15px;
+      border-bottom: 1px solid rgba(72, 187, 120, 0.2);
+    }
+
+    .topic-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .topic-interactive {
+      padding: 25px;
+    }
+
+    .demo-area {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      min-height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .control-btn {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .feedback {
+      font-size: 0.9rem;
+      text-align: center;
+      margin-top: 10px;
+      padding: 8px;
+      min-height: 36px;
+    }
+
+    .feedback.success {
+      color: #68d391;
+    }
+
+    .genetics {
+      --accent-gradient: linear-gradient(135deg, #9f7aea, #b794f6);
+    }
+
+    .punnett-square-area {
+      display: grid;
+      grid-template-columns: 50px 1fr 1fr;
+      grid-template-rows: 50px 1fr 1fr;
+      gap: 5px;
+      width: 200px;
+      height: 200px;
+    }
+
+    .punnett-square-area div {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .punnett-header {
+      background: transparent !important;
+    }
+
+    .punnett-offspring.dominant {
+      background-color: #9f7aea;
+    }
+
+    .punnett-offspring.recessive {
+      background-color: #63b3ed;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="animation-container" class="bg-animation-container"></div>
+  <a href="biology.html" class="back-button">&#x2190;</a>
+  <div class="topic-card genetics">
+    <div class="topic-header">
+      <h3 class="topic-title">🧬 Punnett Square Genetics</h3>
+    </div>
+    <div class="topic-interactive">
+      <div class="demo-area">
+        <div class="punnett-square-area">
+          <div class="punnett-header"></div>
+          <div class="punnett-header" id="p1a1">A</div>
+          <div class="punnett-header" id="p1a2">a</div>
+          <div class="punnett-header" id="p2a1">A</div>
+          <div class="punnett-offspring" id="o1"></div>
+          <div class="punnett-offspring" id="o2"></div>
+          <div class="punnett-header" id="p2a2">a</div>
+          <div class="punnett-offspring" id="o3"></div>
+          <div class="punnett-offspring" id="o4"></div>
+        </div>
+      </div>
+      <div class="controls">
+        <span>Parent 1:</span><select id="parent1" class="control-btn" onchange="runPunnettSquare()">
+          <option value="Aa">Aa</option>
+          <option value="AA">AA</option>
+          <option value="aa">aa</option>
+        </select>
+        <span>Parent 2:</span><select id="parent2" class="control-btn" onchange="runPunnettSquare()">
+          <option value="Aa">Aa</option>
+          <option value="AA">AA</option>
+          <option value="aa">aa</option>
+        </select>
+      </div>
+      <div class="feedback" id="genetics-feedback">Choose parent genotypes to see results.</div>
+    </div>
+  </div>
+  <script>
+    function updateFeedback(id, message, type) { document.getElementById(id).textContent = message; document.getElementById(id).className = `feedback ${type || ''}`; }
+    function runPunnettSquare() { const p1 = document.getElementById('parent1').value, p2 = document.getElementById('parent2').value; const p1Alleles = [p1[0], p1[1]], p2Alleles = [p2[0], p2[1]]; document.getElementById('p1a1').textContent = p1Alleles[0]; document.getElementById('p1a2').textContent = p1Alleles[1]; document.getElementById('p2a1').textContent = p2Alleles[0]; document.getElementById('p2a2').textContent = p2Alleles[1]; const offspring = [p1Alleles[0] + p2Alleles[0], p1Alleles[1] + p2Alleles[0], p1Alleles[0] + p2Alleles[1], p1Alleles[1] + p2Alleles[1]]; let dominantCount = 0; offspring.forEach((geno, i) => { const el = document.getElementById(`o${i + 1}`); const sortedGeno = geno.split('').sort((a, b) => b.localeCompare(a)).join(''); el.textContent = sortedGeno; if (sortedGeno.includes('A')) { el.className = 'punnett-offspring dominant'; dominantCount++; } else { el.className = 'punnett-offspring recessive'; } }); updateFeedback('genetics-feedback', `Results: ${(dominantCount / 4) * 100}% Dominant Phenotype`, 'success'); }
+    window.addEventListener('load', () => { runPunnettSquare(); const container = document.getElementById('animation-container'); for (let i = 0; i < 30; i++) { const bubble = document.createElement('div'); bubble.className = 'cell-bubble'; const size = Math.random() * 100 + 20; bubble.style.width = `${size}px`; bubble.style.height = `${size}px`; bubble.style.left = `${Math.random() * 100}%`; bubble.style.animationDelay = `${Math.random() * 10}s`; bubble.style.animationDuration = `${Math.random() * 15 + 10}s`; container.appendChild(bubble); } });
+  </script>
+</body>
+
+</html>

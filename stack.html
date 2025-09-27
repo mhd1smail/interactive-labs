@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DSA - The Stack</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #000;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .live-bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: rgba(56, 189, 134, 0.1);
+      border: 1px solid rgba(56, 189, 134, 0.2);
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      text-decoration: none;
+      color: white;
+    }
+
+    .topic-card {
+      background: linear-gradient(135deg, rgba(10, 25, 15, 0.8), rgba(0, 10, 5, 0.7));
+      border-radius: 20px;
+      border: 1px solid rgba(56, 189, 134, 0.3);
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      max-width: 550px;
+      backdrop-filter: blur(5px);
+    }
+
+    .topic-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .topic-header {
+      padding: 20px 25px 15px;
+      border-bottom: 1px solid rgba(56, 189, 134, 0.2);
+    }
+
+    .topic-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .topic-interactive {
+      padding: 25px;
+    }
+
+    .demo-area {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .control-btn {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .feedback {
+      font-size: 0.8rem;
+      text-align: center;
+      margin-top: 10px;
+      padding: 8px;
+      min-height: 36px;
+    }
+
+    .feedback.info {
+      color: #63b3ed;
+    }
+
+    .feedback.success {
+      color: #68d391;
+    }
+
+    .feedback.warning {
+      color: #ed64a6;
+    }
+
+    .mono-font {
+      font-family: 'Fira Code', monospace;
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      to {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+    }
+
+    @keyframes highlight {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 15px var(--accent-color);
+      }
+    }
+
+    .stack {
+      --accent-color: rgba(159, 122, 234, 0.6);
+      --accent-gradient: linear-gradient(135deg, #9f7aea, #b794f6);
+    }
+
+    .stack-demo-area {
+      width: 100px;
+      height: 160px;
+      border: 3px solid #4a5568;
+      border-top: none;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      padding: 5px;
+    }
+
+    .stack-item {
+      width: 90%;
+      padding: 5px;
+      background: var(--accent-gradient);
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+      margin-top: 5px;
+      color: white;
+      animation: pushIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .stack-item.removing {
+      animation: fadeOut 0.4s ease forwards;
+    }
+
+    .stack-item.highlight {
+      animation: highlight 0.8s ease;
+    }
+
+    @keyframes pushIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="matrix-canvas" class="live-bg-canvas"></canvas>
+  <a href="dsa.html" class="back-button">&#x2190;</a>
+  <div class="topic-card stack">
+    <div class="topic-header">
+      <h3 class="topic-title mono-font">📚 The Stack (LIFO)</h3>
+    </div>
+    <div class="topic-interactive">
+      <div class="demo-area">
+        <div class="stack-demo-area" id="stack-demo-area"></div>
+      </div>
+      <div class="controls">
+        <button class="control-btn" onclick="stack.push()">push()</button>
+        <button class="control-btn" onclick="stack.pop()">pop()</button>
+        <button class="control-btn" onclick="stack.peek()">peek()</button>
+      </div>
+      <div class="feedback" id="stack-feedback">Push an item onto the stack.</div>
+    </div>
+  </div>
+  <script>
+    function updateFeedback(id, message, type) { document.getElementById(id).textContent = message; document.getElementById(id).className = `feedback ${type || ''}`; }
+    const stack = { area: document.getElementById('stack-demo-area'), items: [], push() { if (this.items.length >= 5) { updateFeedback('stack-feedback', 'Stack is full!', 'warning'); return; } const value = String.fromCharCode(65 + (this.items.length % 26)); this.items.push(value); this.render(); updateFeedback('stack-feedback', `Pushed "${value}"`, 'success'); }, pop() { if (this.items.length === 0) { updateFeedback('stack-feedback', 'Stack is empty.', 'warning'); return; } const poppedValue = this.items.pop(); const itemToRemove = this.area.firstChild; if (itemToRemove) itemToRemove.classList.add('removing'); setTimeout(() => this.render(), 400); updateFeedback('stack-feedback', `Popped "${poppedValue}"`, 'info'); }, peek() { if (this.items.length === 0) { updateFeedback('stack-feedback', 'Stack is empty.', 'warning'); return; } const topItem = this.area.firstChild; if (topItem) topItem.classList.add('highlight'); setTimeout(() => topItem.classList.remove('highlight'), 800); updateFeedback('stack-feedback', `Top item is "${this.items[this.items.length - 1]}".`, 'info'); }, render() { this.area.innerHTML = ''; this.items.forEach(value => { const itemEl = document.createElement('div'); itemEl.className = 'stack-item mono-font'; itemEl.textContent = value; this.area.prepend(itemEl); }); } };
+    const canvas = document.getElementById('matrix-canvas'); const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; const alphabet = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; const fontSize = 16; const columns = canvas.width / fontSize; const rainDrops = []; for (let x = 0; x < columns; x++) { rainDrops[x] = 1; } const draw = () => { ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#0F0'; ctx.font = fontSize + 'px monospace'; for (let i = 0; i < rainDrops.length; i++) { const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length)); ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize); if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) { rainDrops[i] = 0; } rainDrops[i]++; } }; setInterval(draw, 30);
+  </script>
+</body>
+
+</html>

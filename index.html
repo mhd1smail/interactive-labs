@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Interactive Learning Lab</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .bg-container {
+            min-height: 100vh;
+            position: relative;
+        }
+
+        #sectionIntro {
+            background-color: #0c0a1f;
+            background-image: radial-gradient(ellipse at 20% 25%, rgba(100, 80, 255, 0.3), transparent 40%), radial-gradient(ellipse at 80% 70%, rgba(200, 80, 220, 0.25), transparent 45%);
+            display: flex;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #typing-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 44px;
+            font-weight: 700;
+            color: #f0f0f8;
+            background: linear-gradient(90deg, #d8baff, #a7c5ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(180, 160, 255, 0.2);
+        }
+
+        #skip-btn {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        #skip-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="sectionIntro" class="bg-container">
+        <p id="typing-text"></p>
+        <button id="skip-btn">Skip</button>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const displayElement = document.getElementById('typing-text');
+            const skipButton = document.getElementById('skip-btn');
+            function goToMainPage() { window.location.href = 'main-menu.html'; }
+            skipButton.addEventListener('click', goToMainPage);
+            if (displayElement) {
+                function typeText(text, speed = 50, callback) {
+                    let index = 0;
+                    displayElement.textContent = '';
+                    function addLetter() { if (index < text.length) { displayElement.textContent += text[index++]; setTimeout(addLetter, speed); } else { if (callback) setTimeout(callback, 400); } }
+                    addLetter();
+                }
+                typeText('Hi... Learner!', 120, () => {
+                    setTimeout(() => {
+                        displayElement.textContent = '';
+                        typeText('Welcome to The World of Interactive Learning!', 80, () => {
+                            goToMainPage();
+                        });
+                    }, 500);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

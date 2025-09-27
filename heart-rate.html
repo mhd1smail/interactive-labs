@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biology - Heart Rate</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0c1f1a;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .bg-animation-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .cell-bubble {
+      position: absolute;
+      background: rgba(72, 187, 120, 0.15);
+      border-radius: 50%;
+      box-shadow: inset 0 0 10px rgba(72, 187, 120, 0.5);
+      animation: floatUp 25s infinite linear;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-10vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      text-decoration: none;
+      color: white;
+    }
+
+    .topic-card {
+      background: linear-gradient(135deg, rgba(29, 31, 35, 0.8), rgba(22, 62, 48, 0.7));
+      border-radius: 20px;
+      border: 1px solid rgba(72, 187, 120, 0.3);
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      max-width: 550px;
+      backdrop-filter: blur(5px);
+    }
+
+    .topic-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .topic-header {
+      padding: 20px 25px 15px;
+      border-bottom: 1px solid rgba(72, 187, 120, 0.2);
+    }
+
+    .topic-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .topic-interactive {
+      padding: 25px;
+    }
+
+    .demo-area {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .control-btn {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .feedback {
+      font-size: 0.9rem;
+      text-align: center;
+      margin-top: 10px;
+      padding: 8px;
+      min-height: 36px;
+    }
+
+    .feedback.info {
+      color: #63b3ed;
+    }
+
+    .heart-rate {
+      --accent-gradient: linear-gradient(135deg, #e53e3e, #fc8181);
+    }
+
+    .heart-demo {
+      width: 120px;
+      height: 120px;
+      position: relative;
+    }
+
+    .heart {
+      width: 100px;
+      height: 100px;
+      position: absolute;
+      left: 10px;
+      top: 20px;
+      background: var(--accent-gradient);
+      animation: beat var(--beat-speed, 1s) ease-in-out infinite;
+      filter: drop-shadow(0 0 15px rgba(229, 62, 62, 0.5));
+    }
+
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: var(--accent-gradient);
+      border-radius: 50%;
+    }
+
+    .heart::before {
+      left: 50px;
+      top: 0;
+    }
+
+    .heart::after {
+      left: 0;
+      top: -50px;
+    }
+
+    @keyframes beat {
+
+      0%,
+      100% {
+        transform: scale(1) rotate(-45deg);
+      }
+
+      50% {
+        transform: scale(1.1) rotate(-45deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="animation-container" class="bg-animation-container"></div>
+  <a href="biology.html" class="back-button">&#x2190;</a>
+  <div class="topic-card heart-rate">
+    <div class="topic-header">
+      <h3 class="topic-title">❤️ Heart Rate Simulator</h3>
+    </div>
+    <div class="topic-interactive">
+      <div class="demo-area">
+        <div class="heart-demo">
+          <div class="heart" id="heart"></div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="control-btn" onclick="setHeartRate('sleep')">Sleep (60 BPM)</button>
+        <button class="control-btn" onclick="setHeartRate('walk')">Walk (100 BPM)</button>
+        <button class="control-btn" onclick="setHeartRate('run')">Run (140 BPM)</button>
+      </div>
+      <div class="feedback" id="heart-feedback">Current State: Resting (80 BPM)</div>
+    </div>
+  </div>
+  <script>
+    function updateFeedback(id, message, type) { document.getElementById(id).textContent = message; document.getElementById(id).className = `feedback ${type || ''}`; }
+    function setHeartRate(activity) { const heart = document.getElementById('heart'); let speed, bpm, message; switch (activity) { case 'sleep': speed = '1.0s'; bpm = 60; message = 'Sleeping'; break; case 'walk': speed = '0.6s'; bpm = 100; message = 'Walking'; break; case 'run': speed = '0.43s'; bpm = 140; message = 'Running'; break; default: speed = '0.75s'; bpm = 80; message = 'Resting'; } heart.style.setProperty('--beat-speed', speed); updateFeedback('heart-feedback', `State: ${message} (${bpm} BPM)`, 'info'); }
+    window.addEventListener('load', () => { setHeartRate('rest'); const container = document.getElementById('animation-container'); for (let i = 0; i < 30; i++) { const bubble = document.createElement('div'); bubble.className = 'cell-bubble'; const size = Math.random() * 100 + 20; bubble.style.width = `${size}px`; bubble.style.height = `${size}px`; bubble.style.left = `${Math.random() * 100}%`; bubble.style.animationDelay = `${Math.random() * 10}s`; bubble.style.animationDuration = `${Math.random() * 15 + 10}s`; container.appendChild(bubble); } });
+  </script>
+</body>
+
+</html>

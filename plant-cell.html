@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biology - The Plant Cell</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0c1f1a;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .bg-animation-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .cell-bubble {
+      position: absolute;
+      background: rgba(72, 187, 120, 0.15);
+      border-radius: 50%;
+      box-shadow: inset 0 0 10px rgba(72, 187, 120, 0.5);
+      animation: floatUp 25s infinite linear;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-10vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      text-decoration: none;
+      color: white;
+    }
+
+    .topic-card {
+      background: linear-gradient(135deg, rgba(29, 31, 35, 0.8), rgba(22, 62, 48, 0.7));
+      border-radius: 20px;
+      border: 1px solid rgba(72, 187, 120, 0.3);
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      max-width: 550px;
+      backdrop-filter: blur(5px);
+    }
+
+    .topic-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .topic-header {
+      padding: 20px 25px 15px;
+      border-bottom: 1px solid rgba(72, 187, 120, 0.2);
+    }
+
+    .topic-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .topic-interactive {
+      padding: 25px;
+    }
+
+    .demo-area {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      min-height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .feedback {
+      font-size: 0.9rem;
+      text-align: center;
+      margin-top: 10px;
+      padding: 8px;
+      min-height: 72px;
+    }
+
+    .feedback.info {
+      color: #63b3ed;
+    }
+
+    .plant-cell {
+      --accent-gradient: linear-gradient(135deg, #48bb78, #68d391);
+    }
+
+    .cell-demo {
+      width: 320px;
+      height: 220px;
+      position: relative;
+      border-radius: 40px;
+      background: radial-gradient(circle, rgba(104, 211, 145, 0.1), rgba(72, 187, 120, 0.05));
+    }
+
+    .cell-organelle {
+      position: absolute;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      opacity: 0.9;
+    }
+
+    .cell-organelle:hover {
+      transform: scale(1.05);
+      opacity: 1;
+    }
+
+    .cell-organelle.highlight {
+      border: 2px solid #fff;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+      z-index: 10;
+    }
+
+    #cell-wall {
+      width: 100%;
+      height: 100%;
+      border: 3px solid rgba(72, 187, 120, 0.8);
+      border-radius: 40px;
+    }
+
+    #cell-membrane {
+      width: 96%;
+      height: 96%;
+      border: 2px solid rgba(160, 174, 192, 0.6);
+      border-radius: 38px;
+      top: 2%;
+      left: 2%;
+    }
+
+    #nucleus {
+      width: 70px;
+      height: 70px;
+      background: #ED64A6;
+      border-radius: 50%;
+      top: 30px;
+      left: 40px;
+      z-index: 6;
+    }
+
+    #dna-strand {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 2px solid #e0b0ff;
+      border-radius: 50%;
+    }
+
+    #vacuole {
+      width: 130px;
+      height: 90px;
+      background: rgba(66, 153, 225, 0.5);
+      border: 2px solid rgba(66, 153, 225, 0.7);
+      border-radius: 50% 30% 60% 40% / 30% 60% 40% 50%;
+      top: 60px;
+      right: 30px;
+      z-index: 5;
+    }
+
+    .chloroplast-group {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+    }
+
+    .chloroplast-item {
+      position: absolute;
+      width: 45px;
+      height: 30px;
+      background: #68D391;
+      border: 1px solid rgba(104, 211, 145, 0.8);
+      border-radius: 50%;
+    }
+
+    .c1 {
+      top: 140px;
+      left: 60px;
+    }
+
+    .c2 {
+      top: 100px;
+      left: 130px;
+    }
+
+    .c3 {
+      top: 160px;
+      left: 150px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="animation-container" class="bg-animation-container"></div>
+  <a href="biology.html" class="back-button">&#x2190;</a>
+  <div class="topic-card plant-cell">
+    <div class="topic-header">
+      <h3 class="topic-title">🌱 The Plant Cell</h3>
+    </div>
+    <div class="topic-interactive">
+      <div class="demo-area">
+        <div class="cell-demo">
+          <div class="cell-organelle" id="cell-wall" onclick="showOrganelleInfo('cell-wall')"></div>
+          <div class="cell-organelle" id="cell-membrane" onclick="showOrganelleInfo('cell-membrane')"></div>
+          <div class="cell-organelle" id="nucleus" onclick="showOrganelleInfo('nucleus')">
+            <div id="dna-strand" onclick="showOrganelleInfo('dna-strand'); event.stopPropagation();"></div>
+          </div>
+          <div class="cell-organelle" id="vacuole" onclick="showOrganelleInfo('vacuole')"></div>
+          <div class="chloroplast-group">
+            <div class="cell-organelle chloroplast-item c1" onclick="showOrganelleInfo('chloroplast')"></div>
+            <div class="cell-organelle chloroplast-item c2" onclick="showOrganelleInfo('chloroplast')"></div>
+            <div class="cell-organelle chloroplast-item c3" onclick="showOrganelleInfo('chloroplast')"></div>
+          </div>
+        </div>
+      </div>
+      <div class="feedback" id="cell-feedback">Click an organelle to learn more.</div>
+    </div>
+  </div>
+  <script>
+    let currentHighlightOrganelle = null;
+    function updateFeedback(id, message, type) { document.getElementById(id).textContent = message; document.getElementById(id).className = `feedback ${type || ''}`; }
+    const organelleInfo = { 'cell-wall': { name: 'Cell Wall', info: 'Provides structural support and protection.' }, 'cell-membrane': { name: 'Cell Membrane', info: 'Regulates passage of substances.' }, 'nucleus': { name: 'Nucleus', info: 'The cell\'s control center, housing DNA.' }, 'vacuole': { name: 'Central Vacuole', info: 'Stores water and maintains turgor pressure.' }, 'chloroplast': { name: 'Chloroplast', info: 'The site of photosynthesis.' }, 'dna-strand': { name: 'DNA', info: 'The genetic blueprint of the cell.' } };
+    function showOrganelleInfo(organelleId) {
+      event.stopPropagation();
+      if (currentHighlightOrganelle) {
+        const prev = document.getElementById(currentHighlightOrganelle);
+        if (prev) prev.classList.remove('highlight');
+        if (currentHighlightOrganelle === 'chloroplast') document.querySelectorAll('.chloroplast-item').forEach(el => el.classList.remove('highlight'));
+      }
+      const clicked = document.getElementById(organelleId);
+      if (clicked) clicked.classList.add('highlight');
+      if (organelleId === 'chloroplast') document.querySelectorAll('.chloroplast-item').forEach(el => el.classList.add('highlight'));
+      currentHighlightOrganelle = organelleId;
+      const data = organelleInfo[organelleId];
+      updateFeedback('cell-feedback', `${data.name}: ${data.info}`, 'info');
+    }
+    document.addEventListener('DOMContentLoaded', () => { const container = document.getElementById('animation-container'); for (let i = 0; i < 30; i++) { const bubble = document.createElement('div'); bubble.className = 'cell-bubble'; const size = Math.random() * 100 + 20; bubble.style.width = `${size}px`; bubble.style.height = `${size}px`; bubble.style.left = `${Math.random() * 100}%`; bubble.style.animationDelay = `${Math.random() * 10}s`; bubble.style.animationDuration = `${Math.random() * 15 + 10}s`; container.appendChild(bubble); } });
+  </script>
+</body>
+
+</html>

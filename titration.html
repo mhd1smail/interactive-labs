@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chemistry - Titration</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #111827;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .bg-animation-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .chem-bubble {
+      position: absolute;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 50%;
+      animation: rise-bubble 15s infinite linear;
+    }
+
+    @keyframes rise-bubble {
+      0% {
+        transform: translateY(100vh);
+        opacity: 1;
+      }
+
+      90% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-10vh);
+        opacity: 0;
+      }
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      text-decoration: none;
+      color: white;
+    }
+
+    .topic-card {
+      background: linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.7));
+      border-radius: 20px;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      max-width: 550px;
+      backdrop-filter: blur(5px);
+    }
+
+    .topic-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-gradient);
+    }
+
+    .topic-header {
+      padding: 20px 25px 15px;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .topic-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .topic-interactive {
+      padding: 25px;
+    }
+
+    .demo-area {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      min-height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .control-btn {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .feedback {
+      font-size: 0.9rem;
+      text-align: center;
+      margin-top: 10px;
+      padding: 8px;
+      min-height: 36px;
+    }
+
+    .feedback.success {
+      color: #68d391;
+    }
+
+    .feedback.info {
+      color: #63b3ed;
+    }
+
+    .titration {
+      --accent-gradient: linear-gradient(135deg, #9f7aea, #b794f6);
+    }
+
+    .titration-demo {
+      width: 100%;
+      height: 200px;
+      position: relative;
+    }
+
+    .burette-tube {
+      width: 20px;
+      height: 100px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 0 0 5px 5px;
+      position: relative;
+      overflow: hidden;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .burette-liquid-fill {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 96%;
+      background: #b794f6;
+      transition: all 0.3s ease;
+    }
+
+    .flask {
+      width: 90px;
+      height: 100px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 50% 50% 10px 10px / 20px 20px 10px 10px;
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      overflow: hidden;
+    }
+
+    .flask-neck {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      height: 40px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-bottom: none;
+    }
+
+    .flask-liquid-fill {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 70%;
+      background: #f687b3;
+      transition: all 0.3s ease;
+    }
+
+    .drop {
+      width: 8px;
+      height: 8px;
+      background: #b794f6;
+      border-radius: 50%;
+      position: absolute;
+      left: 50%;
+      top: 70px;
+      transform: translateX(-50%);
+      opacity: 0;
+    }
+
+    .drop.falling {
+      animation: fall 0.5s ease-in forwards;
+    }
+
+    @keyframes fall {
+      0% {
+        top: 70px;
+        opacity: 1;
+      }
+
+      100% {
+        top: 115px;
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="animation-container" class="bg-animation-container"></div>
+  <a href="chemistry.html" class="back-button">&#x2190;</a>
+  <div class="topic-card titration">
+    <div class="topic-header">
+      <h3 class="topic-title">💧 Acid-Base Titration</h3>
+    </div>
+    <div class="topic-interactive">
+      <div class="demo-area">
+        <div class="titration-demo">
+          <div class="burette-tube" onclick="addTitrationDrop()">
+            <div class="burette-liquid-fill" id="burette-liquid"></div>
+          </div>
+          <div class="flask">
+            <div class="flask-neck"></div>
+            <div class="flask-liquid-fill" id="flask-liquid"></div>
+          </div>
+          <div class="drop" id="titration-drop"></div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="control-btn" onclick="addTitrationDrop()">Add Drop</button>
+        <button class="control-btn" onclick="resetTitration()">Reset</button>
+      </div>
+      <div class="feedback" id="titration-feedback">Add drops to reach the endpoint.</div>
+    </div>
+  </div>
+  <script>
+    function updateFeedback(id, message, type) { document.getElementById(id).textContent = message; document.getElementById(id).className = `feedback ${type || ''}`; }
+    let dropsAdded = 0; const endpoint = 7;
+    const initialFlaskColor = '#f687b3', neutralFlaskColor = '#68d391';
+    function addTitrationDrop() { if (dropsAdded >= endpoint) return; const drop = document.getElementById('titration-drop'); const newDrop = drop.cloneNode(true); drop.parentNode.replaceChild(newDrop, drop); newDrop.classList.add('falling'); dropsAdded++; const flaskLiquid = document.getElementById('flask-liquid'); const buretteLiquid = document.getElementById('burette-liquid'); const progress = dropsAdded / endpoint; flaskLiquid.style.backgroundColor = `color-mix(in srgb, ${initialFlaskColor} ${100 - progress * 100}%, ${neutralFlaskColor})`; buretteLiquid.style.height = `${96 - (dropsAdded * (96 / endpoint))}%`; if (dropsAdded === endpoint) { updateFeedback('titration-feedback', `Endpoint reached!`, 'success'); } else { updateFeedback('titration-feedback', `${dropsAdded} drop(s) added...`, 'info'); } }
+    function resetTitration() { dropsAdded = 0; document.getElementById('flask-liquid').style.backgroundColor = initialFlaskColor; document.getElementById('burette-liquid').style.height = `96%`; updateFeedback('titration-feedback', 'Titration reset.', 'info'); }
+    document.addEventListener('DOMContentLoaded', () => { const container = document.getElementById('animation-container'); for (let i = 0; i < 40; i++) { const bubble = document.createElement('div'); bubble.className = 'chem-bubble'; const size = Math.random() * 60 + 5; bubble.style.width = `${size}px`; bubble.style.height = `${size}px`; bubble.style.left = `${Math.random() * 100}%`; bubble.style.animationDelay = `${Math.random() * 15}s`; bubble.style.animationDuration = `${Math.random() * 10 + 5}s`; container.appendChild(bubble); } });
+  </script>
+</body>
+
+</html>
