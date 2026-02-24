@@ -1,0 +1,1 @@
+> 🌱 **[VIBE]** — Early interactive web experiments (2nd semester). Built while learning basic JavaScript, DOM manipulation, and event handling. Not aligned with current cyber/DSA focus — kept for growth tracking.
